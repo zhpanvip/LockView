@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.zhpan.ovallockview.CircleView
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginTop="80dp"
+        app:circle_color="@color/green"
+        android:layout_gravity="center"/>
+
+    <com.zhpan.ovallockview.CircleView
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        app:circle_color="@color/red"
+        android:layout_marginTop="-80dp"
+        android:layout_gravity="center"/>
+
+    <com.zhpan.ovallockview.CircleView
+        android:id="@+id/oval_view"
+        android:layout_width="150dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center"
+        android:padding="20dp"/>
+</FrameLayout>
