@@ -5,24 +5,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <com.zhpan.ovallockview.CircleView
+    <com.zhpan.ovallockview.view.CircleView
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="100dp"
         app:circle_color="@color/green"
         android:layout_gravity="center"/>
 
-    <com.zhpan.ovallockview.CircleView
+    <com.zhpan.ovallockview.view.CircleView
         android:layout_width="15dp"
         android:layout_height="15dp"
         app:circle_color="@color/red"
-        android:layout_marginTop="-80dp"
+        android:layout_marginTop="-100dp"
         android:layout_gravity="center"/>
 
-    <com.zhpan.ovallockview.CircleView
+    <com.zhpan.ovallockview.view.CircleView
         android:id="@+id/oval_view"
-        android:layout_width="150dp"
-        android:layout_height="300dp"
+        android:layout_width="200dp"
+        android:layout_height="340dp"
         android:layout_gravity="center"
         android:padding="20dp"/>
 </FrameLayout>

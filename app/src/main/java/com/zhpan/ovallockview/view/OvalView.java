@@ -1,4 +1,4 @@
-package com.zhpan.ovallockview;/**
+package com.zhpan.ovallockview.view;/**
  * Created by jun on 16-7-14.
  */
 
@@ -8,8 +8,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
+
+import com.zhpan.ovallockview.utils.DensityUtils;
+import com.zhpan.ovallockview.R;
 
 /**
  * @Author Jun Cheung (Email:jun@huatune.com)

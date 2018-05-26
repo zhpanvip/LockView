@@ -1,4 +1,4 @@
-package com.zhpan.ovallockview;
+package com.zhpan.ovallockview.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,6 +10,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Scroller;
 
+import com.zhpan.ovallockview.utils.DensityUtils;
+import com.zhpan.ovallockview.R;
+
 
 /**
  * Created by zhpan on 2017/5/31.
@@ -17,7 +20,7 @@ import android.widget.Scroller;
  */
 
 public class CircleView extends View {
-    private int background;
+    private int circleColor;
     private int mTextColor;
     private int mWidth;
     private int mHeight;
@@ -45,9 +48,9 @@ public class CircleView extends View {
         super(context, attrs, defStyleAttr);
         if (attrs != null) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircleView);
-            background = typedArray.getColor(R.styleable.CircleView_circle_color, context.getResources().getColor(R.color.red));
-            mTextColor = typedArray.getColor(R.styleable.CircleView_text_color, context.getResources().getColor(R.color.red));
-            mTextSize = typedArray.getDimension(R.styleable.CircleView_text_size, 16.0f);
+            circleColor = typedArray.getColor(R.styleable.CircleView_circle_color, context.getResources().getColor(R.color.red));
+            mTextColor = typedArray.getColor(R.styleable.CircleView_text_color, context.getResources().getColor(R.color.white));
+            mTextSize = typedArray.getDimension(R.styleable.CircleView_text_size, DensityUtils.dp2px(context,16));
             mText = typedArray.getString(R.styleable.CircleView_text_str);
             typedArray.recycle();
         }
@@ -58,7 +61,7 @@ public class CircleView extends View {
         mPaint = new Paint();
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setAntiAlias(true);
-        mPaint.setColor(background);
+        mPaint.setColor(circleColor);
 
         mPaintText = new Paint();
         mPaintText.setColor(mTextColor);
@@ -88,6 +91,7 @@ public class CircleView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        mPaint.setColor(circleColor);
         canvas.drawCircle(mPieCenterX, mPieCenterY, mRadius, mPaint);
         drawText(canvas);
     }
@@ -112,6 +116,15 @@ public class CircleView extends View {
         invalidate();
     }
 
+    public int getCircleColor() {
+        return circleColor;
+    }
+
+    public void setCircleColor(int background) {
+        this.circleColor = background;
+        invalidate();
+    }
+
     public void smoothScroll(int destX, int destY) {
         int scrollY = getScrollY();
         int delta = destY - scrollY;
@@ -125,5 +138,13 @@ public class CircleView extends View {
             scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             postInvalidate();
         }
+    }
+
+    public Scroller getScroller() {
+        return mScroller;
+    }
+
+    public void setScroller(Scroller scroller) {
+        mScroller = scroller;
     }
 }
