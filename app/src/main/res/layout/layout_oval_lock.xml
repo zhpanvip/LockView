@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <com.zhpan.ovallockview.view.CircleView
+        android:id="@+id/green_cv"
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:layout_marginTop="100dp"
@@ -13,13 +14,14 @@
         android:layout_gravity="center"/>
 
     <com.zhpan.ovallockview.view.CircleView
+        android:id="@+id/red_cv"
         android:layout_width="15dp"
         android:layout_height="15dp"
         app:circle_color="@color/red"
         android:layout_marginTop="-100dp"
         android:layout_gravity="center"/>
 
-    <com.zhpan.ovallockview.view.CircleView
+    <com.zhpan.ovallockview.view.CircleWaveView
         android:id="@+id/oval_view"
         android:layout_width="200dp"
         android:layout_height="340dp"

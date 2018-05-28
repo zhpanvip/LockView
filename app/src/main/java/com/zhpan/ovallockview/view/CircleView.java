@@ -1,5 +1,6 @@
 package com.zhpan.ovallockview.view;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -34,6 +35,13 @@ public class CircleView extends View {
     private Paint mPaint;
     private Paint mPaintText;
     private Rect bounds;
+
+    private boolean isLock = true;
+    private ValueAnimator animator;
+    private int waveDelta;
+    private int transformDelta;
+
+    private boolean transforming;
 
     public CircleView(Context context) {
         this(context, null);
@@ -116,10 +124,6 @@ public class CircleView extends View {
         invalidate();
     }
 
-    public int getCircleColor() {
-        return circleColor;
-    }
-
     public void setCircleColor(int background) {
         this.circleColor = background;
         invalidate();
@@ -140,11 +144,11 @@ public class CircleView extends View {
         }
     }
 
-    public Scroller getScroller() {
-        return mScroller;
+    public int getRadius() {
+        return mRadius;
     }
 
-    public void setScroller(Scroller scroller) {
-        mScroller = scroller;
+    public Scroller getScroller() {
+        return mScroller;
     }
 }

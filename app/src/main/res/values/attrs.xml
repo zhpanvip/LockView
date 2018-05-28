@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="CircleWaveView">
+        <!--选中时的圆点图片-->
+        <attr name="wave_color" format="color"/>
+        <attr name="wave_text_color" format="color"/>
+        <attr name="wave_text_size" format="dimension"/>
+        <attr name="wave_text_str" format="string"/>
+    </declare-styleable>
+
     <declare-styleable name="CircleView">
         <!--选中时的圆点图片-->
         <attr name="circle_color" format="color"/>
