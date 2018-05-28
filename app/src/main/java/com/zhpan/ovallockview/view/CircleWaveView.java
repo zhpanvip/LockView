@@ -6,13 +6,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Scroller;
-import android.widget.Toast;
 
 import com.zhpan.ovallockview.utils.DensityUtils;
 import com.zhpan.ovallockview.R;
@@ -37,14 +37,19 @@ public class CircleWaveView extends View {
     private float mPieCenterY;
     private Paint mPaint;
     private Paint mPaintText;
+    private Paint mPaintTrangel;
+    private Path mPath;
     private Rect bounds;
 
     private boolean isLock = true;
     private ValueAnimator animator;
     private int waveDelta;
     private int transformDelta;
-
+    private int width;
+    private int height;
     private boolean transforming;
+    private Context mContext;
+
 
     public CircleWaveView(Context context) {
         this(context, null);
@@ -69,19 +74,27 @@ public class CircleWaveView extends View {
     }
 
     private void init(Context context) {
+        mContext=context;
         mPaint = new Paint();
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setAntiAlias(true);
         mPaint.setColor(circleColor);
-
-        mPaintText = new Paint();
+        mPaintTrangel=new Paint();
+        mPaintText=new Paint();
         mPaintText.setColor(mTextColor);
         mPaintText.setStyle(Paint.Style.FILL);
         mPaintText.setTextSize(mTextSize);
         mPaintText.setTextAlign(Paint.Align.CENTER);
         mPaintText.setAntiAlias(true);
+
         mScroller = new Scroller(context);
+        mPath=new Path();
         bounds = new Rect();
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
     }
 
     @Override
@@ -106,6 +119,33 @@ public class CircleWaveView extends View {
         drawCircle(canvas);
         //  canvas.drawCircle(mPieCenterX, mPieCenterY, mRadius, mPaint);
         drawText(canvas);
+        drawTriangle(canvas);
+    }
+
+    /**
+     * 画三角形
+     */
+    private void drawTriangle(Canvas canvas) {
+        int mWidth = getWidth();
+        int mHeight=getHeight();
+        Log.e("TAG","mWidth="+mWidth+"mHeight="+mHeight);
+        mPaintTrangel.setStyle(Paint.Style.FILL);
+        //  三角形顶点到圆边的距离
+        int h0 = DensityUtils.dp2px(mContext, 10);
+        //  三角形高
+        int h1=DensityUtils.dp2px(mContext,12);
+        //  三角形底边长
+        int w=DensityUtils.dp2px(mContext,14);
+        mPaintTrangel.setColor(getResources().getColor(R.color.redLight));
+        mPath.moveTo(mWidth/2,mHeight/2-(mRadius-h0));
+        mPath.lineTo(mWidth/2-w,mHeight/2-(mRadius-h1-h0));
+        mPath.lineTo(mWidth/2+w,mHeight/2-(mRadius-h1-h0));
+        canvas.drawPath(mPath,mPaintTrangel);
+
+        mPath.moveTo(mWidth/2,mHeight/2+(mRadius-h0));
+        mPath.lineTo(mWidth/2-w,mHeight/2+(mRadius-h1-h0));
+        mPath.lineTo(mWidth/2+w,mHeight/2+(mRadius-h1-h0));
+        canvas.drawPath(mPath,mPaintTrangel);
     }
 
     private void drawCircle(Canvas canvas) {
@@ -122,17 +162,15 @@ public class CircleWaveView extends View {
             } else {
                 mRadius = transformDelta;
             }
-            Log.e("red", "---------" + mRadius);
             mPaint.setColor(getResources().getColor(R.color.green));
             canvas.drawCircle(mPieCenterX, mPieCenterY, mRadius, mPaint);
         } else {
             mRadius = mRadius - waveDelta;
             if (!isLock) {
-                mPaint.setColor(getResources().getColor(R.color.green));
+                //mPaint.setColor(getResources().getColor(R.color.green));
             } else {
-                mPaint.setColor(getResources().getColor(R.color.red));
+               // mPaint.setColor(getResources().getColor(R.color.red));
             }
-            Log.e("green", "---------" + mRadius);
             canvas.drawCircle(mPieCenterX, mPieCenterY, mRadius, mPaint);
         }
     }
@@ -162,7 +200,6 @@ public class CircleWaveView extends View {
                 int verticalCenter = getHeight() / 2;
                 int horizontalCenter = getWidth() / 2;
                 waveDelta = (int) (Math.min(verticalCenter, horizontalCenter) * (float) animation.getAnimatedValue() / 16);
-//                Log.e("waveDelta","---------"+waveDelta);
                 invalidate();
             }
         });
@@ -209,7 +246,7 @@ public class CircleWaveView extends View {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int verticalCenter = getHeight() / 2;
                     int horizontalCenter = getWidth() / 2;
-                    transformDelta = (int) (Math.min(verticalCenter, horizontalCenter) * (float) animation.getAnimatedValue());
+                    transformDelta = (int) ((Math.min(verticalCenter, horizontalCenter) -Math.min(verticalCenter, horizontalCenter) / 6)* (float) animation.getAnimatedValue());
                     invalidate();
                 }
             });
@@ -230,6 +267,10 @@ public class CircleWaveView extends View {
         stopWave();
         isLock = lock;
         invalidate();
+    }
+
+    public boolean isLock(){
+        return isLock;
     }
 
 

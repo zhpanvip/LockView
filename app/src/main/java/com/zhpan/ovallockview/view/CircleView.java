@@ -1,6 +1,5 @@
 package com.zhpan.ovallockview.view;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -9,7 +8,6 @@ import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Scroller;
 
 import com.zhpan.ovallockview.utils.DensityUtils;
 import com.zhpan.ovallockview.R;
@@ -28,20 +26,11 @@ public class CircleView extends View {
     private int mRadius;
     private String mText;
     private float mTextSize;
-    private Scroller mScroller;
     //  圆心坐标
     private float mPieCenterX;
     private float mPieCenterY;
     private Paint mPaint;
-    private Paint mPaintText;
     private Rect bounds;
-
-    private boolean isLock = true;
-    private ValueAnimator animator;
-    private int waveDelta;
-    private int transformDelta;
-
-    private boolean transforming;
 
     public CircleView(Context context) {
         this(context, null);
@@ -69,15 +58,6 @@ public class CircleView extends View {
         mPaint = new Paint();
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setAntiAlias(true);
-        mPaint.setColor(circleColor);
-
-        mPaintText = new Paint();
-        mPaintText.setColor(mTextColor);
-        mPaintText.setStyle(Paint.Style.FILL);
-        mPaintText.setTextSize(mTextSize);
-        mPaintText.setTextAlign(Paint.Align.CENTER);
-        mPaintText.setAntiAlias(true);
-        mScroller = new Scroller(context);
         bounds = new Rect();
     }
 
@@ -109,10 +89,13 @@ public class CircleView extends View {
      */
     private void drawText(Canvas canvas) {
         if (TextUtils.isEmpty(mText)) return;
-        mPaintText.getTextBounds(mText, 0, mText.length(), bounds);
-        Paint.FontMetricsInt fontMetricsInt = mPaintText.getFontMetricsInt();
+        mPaint.getTextBounds(mText, 0, mText.length(), bounds);
+        mPaint.setColor(mTextColor);
+        mPaint.setTextSize(mTextSize);
+        mPaint.setTextAlign(Paint.Align.CENTER);
+        Paint.FontMetricsInt fontMetricsInt = mPaint.getFontMetricsInt();
         int baseline = (getMeasuredHeight() - fontMetricsInt.bottom + fontMetricsInt.top) / 2 - fontMetricsInt.top;
-        canvas.drawText(mText, mPieCenterX, baseline, mPaintText);
+        canvas.drawText(mText, mPieCenterX, baseline, mPaint);
     }
 
     public String getText() {
@@ -124,31 +107,12 @@ public class CircleView extends View {
         invalidate();
     }
 
-    public void setCircleColor(int background) {
-        this.circleColor = background;
-        invalidate();
-    }
-
-    public void smoothScroll(int destX, int destY) {
-        int scrollY = getScrollY();
-        int delta = destY - scrollY;
-        mScroller.startScroll(destX, scrollY, 0, delta, 700);
-        invalidate();
-    }
-
-    @Override
-    public void computeScroll() {
-        if (mScroller.computeScrollOffset()) {
-            scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
-            postInvalidate();
-        }
-    }
-
     public int getRadius() {
         return mRadius;
     }
 
-    public Scroller getScroller() {
-        return mScroller;
+    public void setRadius(int radius){
+        mRadius=radius;
+        invalidate();
     }
 }

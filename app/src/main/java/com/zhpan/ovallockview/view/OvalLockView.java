@@ -3,21 +3,18 @@ package com.zhpan.ovallockview.view;
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
-import android.widget.Toast;
 
 import com.zhpan.ovallockview.R;
 import com.zhpan.ovallockview.listener.OnLockOperateListener;
-import com.zhpan.ovallockview.listener.OnLockViewClickListener;
 import com.zhpan.ovallockview.utils.DensityUtils;
 
 public class OvalLockView extends FrameLayout {
-    private CircleWaveView mOvalView;
+    private CircleWaveView mCircleWaveView;
     private CircleView mCircleView;
     private Scroller mScroller;
     private int mLastY;
@@ -27,12 +24,11 @@ public class OvalLockView extends FrameLayout {
     private Option mOption;
     private boolean isOpreating;
     private OnLockOperateListener mOnLockOperateListener;
-    private OnLockViewClickListener mOnLockViewClickListener;
     private static Handler mHandler = new Handler();
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            mOvalView.startWave();
+            mCircleWaveView.startWave();
         }
     };
 
@@ -93,7 +89,7 @@ public class OvalLockView extends FrameLayout {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int y = (int) event.getY();
-        int scrollY = mOvalView.getScrollY();
+        int scrollY = mCircleWaveView.getScrollY();
         int distance = DensityUtils.dp2px(mContext, 100);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -103,12 +99,12 @@ public class OvalLockView extends FrameLayout {
                 break;
             case MotionEvent.ACTION_MOVE:
                 int deltaY = mLastY - y;
-                if (mOvalView.getScrollY() > mTouchSlop) {
+                if (mCircleWaveView.getScrollY() > mTouchSlop) {
                     mOption = Option.LOCK;
-                } else if (mOvalView.getScrollY() < -mTouchSlop) {
+                } else if (mCircleWaveView.getScrollY() < -mTouchSlop) {
                     mOption = Option.UNLOCK;
                 }
-                if (Math.abs(scrollY) > (distance - mOvalView.getRadius() + mCircleView.getRadius())) {
+                if (Math.abs(scrollY) > (distance - mCircleWaveView.getRadius() + mCircleView.getRadius())) {
                     if (mOption != null) {
                         switch (mOption) {
                             case LOCK:
@@ -122,27 +118,26 @@ public class OvalLockView extends FrameLayout {
                         }
                     }
                 }else {
-                    mOvalView.setText("已上锁");
+                    mCircleWaveView.setText("已上锁");
                     isOpreating=false;
                 }
                 /**
                  * 控制滑动边界
                  */
-                if(deltaY+mOvalView.getScrollY()>(mHeight / 2 - mOvalView.getWidth() / 2 - mHeight / 20)){
-                    mOvalView.scrollTo(0,(mHeight / 2 - mOvalView.getWidth() / 2 - mHeight / 20));
+                if(deltaY+ mCircleWaveView.getScrollY()>(mHeight / 2 - mCircleWaveView.getWidth() / 2 - mHeight / 20)){
+                    mCircleWaveView.scrollTo(0,(mHeight / 2 - mCircleWaveView.getWidth() / 2 - mHeight / 20));
                     return true;
-                }else if(deltaY+mOvalView.getScrollY()+(mHeight / 2 - mOvalView.getWidth() / 2 - mHeight / 20)<0){
-                    mOvalView.scrollTo(0,-(mHeight / 2 - mOvalView.getWidth() / 2 - mHeight / 20));
+                }else if(deltaY+ mCircleWaveView.getScrollY()+(mHeight / 2 - mCircleWaveView.getWidth() / 2 - mHeight / 20)<0){
+                    mCircleWaveView.scrollTo(0,-(mHeight / 2 - mCircleWaveView.getWidth() / 2 - mHeight / 20));
                     return true;
                 }
-                mOvalView.scrollBy(0, deltaY);
+                mCircleWaveView.scrollBy(0, deltaY);
                 break;
             case MotionEvent.ACTION_UP:
-                scrollY = mOvalView.getScrollY();
+                scrollY = mCircleWaveView.getScrollY();
                 distance = DensityUtils.dp2px(mContext, 100);
-                Toast.makeText(mContext, "ScrollY=" + scrollY + "radius=" + (distance - mOvalView.getRadius()), Toast.LENGTH_SHORT).show();
 
-                if (Math.abs(scrollY) > (distance - mOvalView.getRadius() + mCircleView.getRadius()) && mOption != null) {
+                if (Math.abs(scrollY) > (distance - mCircleWaveView.getRadius() + mCircleView.getRadius()) && mOption != null) {
                     switch (mOption) {
                         case LOCK:
                             mOnLockOperateListener.onLockStart();
@@ -152,8 +147,7 @@ public class OvalLockView extends FrameLayout {
                             break;
                     }
                 }
-                mOvalView.smoothScroll(0, 0);
-                performClick();
+                mCircleWaveView.smoothScroll(0, 0);
                 break;
         }
         mLastY = y;
@@ -163,12 +157,11 @@ public class OvalLockView extends FrameLayout {
     private void init(Context context, AttributeSet attrs) {
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         View view = View.inflate(context, R.layout.layout_oval_lock, this);
-        mOvalView = view.findViewById(R.id.oval_view);
+        mCircleWaveView = view.findViewById(R.id.oval_view);
         mCircleView = view.findViewById(R.id.green_cv);
-        mOvalView.setText("已上锁");
-        mScroller = mOvalView.getScroller();
+        mScroller = mCircleWaveView.getScroller();
         mContext = context;
-        mOvalView.setOnClickListener(new OnClickListener() {
+        mCircleWaveView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                /* if(mOnLockViewClickListener!=null)
@@ -183,7 +176,7 @@ public class OvalLockView extends FrameLayout {
 
     public void stopWave() {
         mHandler.removeCallbacks(mRunnable);
-        mOvalView.stopWave();
+        mCircleWaveView.stopWave();
         isOpreating=false;
     }
 
@@ -193,24 +186,24 @@ public class OvalLockView extends FrameLayout {
      * @param lock
      */
     public void setLock(boolean lock) {
-        mOvalView.setLock(lock);
+        mCircleWaveView.setLock(lock);
+    }
+
+    public boolean isLock(){
+        return mCircleWaveView.isLock();
     }
 
     public void changeLockState(boolean lock) {
-        mOvalView.changeLockState(lock);
+        mCircleWaveView.changeLockState(lock);
     }
 
     public void setText(String text) {
-        mOvalView.setText(text);
+        mCircleWaveView.setText(text);
     }
 
 
     public void setCircleColor(int viewColor) {
-        mOvalView.setCircleColor(viewColor);
-    }
-
-    public void setOnLockViewClickListener(OnLockViewClickListener onLockViewClickListener) {
-        mOnLockViewClickListener = onLockViewClickListener;
+        mCircleWaveView.setCircleColor(viewColor);
     }
 
     public void setOnLockOperateListener(OnLockOperateListener onLockOperateListener) {
