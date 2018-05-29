@@ -325,7 +325,7 @@ public class CircleWaveView extends View {
     public void smoothScroll(int destX, int destY) {
         int scrollY = getScrollY();
         int delta = destY - scrollY;
-        mScroller.startScroll(destX, scrollY, 0, delta, 700);
+        mScroller.startScroll(destX, scrollY, 0, delta, 400);
         invalidate();
     }
 

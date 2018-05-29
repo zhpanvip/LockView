@@ -108,7 +108,7 @@ public class OvalLockView extends FrameLayout {
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (!canSlide) {
-                    return false;
+                    return super.onTouchEvent(event);
                 }
                 int deltaY = mLastY - y;
                 if (mCircleWaveView.getScrollY() > mTouchSlop) {
@@ -134,6 +134,11 @@ public class OvalLockView extends FrameLayout {
                 } else {
                     mCircleWaveView.setUnLockPrePared(false);
                     mCircleWaveView.setLockPrepared(false);
+                    if(isLock()){
+                        mCircleWaveView.setText("已上锁");
+                    }else {
+                        mCircleWaveView.setText("未上锁");
+                    }
                     isOpreating = false;
                 }
                 /**

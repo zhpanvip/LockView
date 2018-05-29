@@ -5,7 +5,6 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.zhpan.ovallockview.listener.OnLockOperateListener;
 import com.zhpan.ovallockview.view.OvalLockView;
