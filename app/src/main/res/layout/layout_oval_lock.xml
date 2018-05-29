@@ -27,4 +27,12 @@
         android:layout_height="300dp"
         android:layout_gravity="center"
         android:padding="20dp"/>
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:visibility="gone"
+        android:indeterminateTint="@color/white"
+        android:layout_gravity="center"/>
 </FrameLayout>

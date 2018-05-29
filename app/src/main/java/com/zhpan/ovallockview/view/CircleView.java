@@ -31,6 +31,7 @@ public class CircleView extends View {
     private float mPieCenterY;
     private Paint mPaint;
     private Rect bounds;
+    private boolean isConnecting;
 
     public CircleView(Context context) {
         this(context, null);
@@ -88,7 +89,7 @@ public class CircleView extends View {
      * 画圆中的文字
      */
     private void drawText(Canvas canvas) {
-        if (TextUtils.isEmpty(mText)) return;
+        if (TextUtils.isEmpty(mText)||isConnecting) return;
         mPaint.getTextBounds(mText, 0, mText.length(), bounds);
         mPaint.setColor(mTextColor);
         mPaint.setTextSize(mTextSize);
@@ -97,6 +98,8 @@ public class CircleView extends View {
         int baseline = (getMeasuredHeight() - fontMetricsInt.bottom + fontMetricsInt.top) / 2 - fontMetricsInt.top;
         canvas.drawText(mText, mPieCenterX, baseline, mPaint);
     }
+
+
 
     public String getText() {
         return mText;
