@@ -9,7 +9,7 @@
         android:id="@+id/green_cv"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="110dp"
         app:circle_color="@color/green"
         android:layout_gravity="center"/>
 
@@ -18,12 +18,12 @@
         android:layout_width="15dp"
         android:layout_height="15dp"
         app:circle_color="@color/red"
-        android:layout_marginTop="-100dp"
+        android:layout_marginTop="-110dp"
         android:layout_gravity="center"/>
 
     <com.zhpan.ovallockview.view.CircleWaveView
         android:id="@+id/oval_view"
-        android:layout_width="180dp"
+        android:layout_width="220dp"
         android:layout_height="300dp"
         android:layout_gravity="center"
         android:padding="20dp"/>

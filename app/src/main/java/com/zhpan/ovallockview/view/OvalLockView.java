@@ -23,14 +23,16 @@ public class OvalLockView extends FrameLayout {
     private Scroller mScroller;
     private int mLastY;
     private int mTouchSlop;
-    private int mHeight;
     private Context mContext;
     private Option mOption;
     private boolean isOpreating;
     private boolean canSlide = true;
-    private boolean isBluetoothConnect;
     private ProgressBar mProgressBar;
     private boolean isConnecting;
+    //  阻尼系数
+    private double damping = 2.2;
+    //  小圆圆心到大圆圆心距离
+    private int distance;
     private OnLockOperateListener mOnLockOperateListener;
     private static Handler mHandler = new Handler();
     private Runnable mRunnable = new Runnable() {
@@ -67,7 +69,6 @@ public class OvalLockView extends FrameLayout {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mHeight = getHeight();
     }
 
     @Override
@@ -99,7 +100,6 @@ public class OvalLockView extends FrameLayout {
 
         int y = (int) event.getY();
         int scrollY = mCircleWaveView.getScrollY();
-        int distance = DensityUtils.dp2px(mContext, 100);
         switch (event.getAction()) {
             case ACTION_DOWN:
                 if (!mScroller.isFinished()) {
@@ -110,7 +110,10 @@ public class OvalLockView extends FrameLayout {
                 if (!canSlide) {
                     return super.onTouchEvent(event);
                 }
-                int deltaY = mLastY - y;
+                if(!mCircleWaveView.isBluetoothConnect()){
+                    performClick();
+                }
+                int deltaY = (int) ((mLastY - y) / damping);
                 if (mCircleWaveView.getScrollY() > mTouchSlop) {
                     mOption = Option.LOCK;
                 } else if (mCircleWaveView.getScrollY() < -mTouchSlop) {
@@ -134,21 +137,26 @@ public class OvalLockView extends FrameLayout {
                 } else {
                     mCircleWaveView.setUnLockPrePared(false);
                     mCircleWaveView.setLockPrepared(false);
-                    if(isLock()){
+                    if (isLock()) {
                         mCircleWaveView.setText("已上锁");
-                    }else {
+                    } else {
                         mCircleWaveView.setText("未上锁");
                     }
                     isOpreating = false;
                 }
+
                 /**
                  * 控制滑动边界
                  */
-                if (deltaY + mCircleWaveView.getScrollY() > (mHeight / 2 - mCircleWaveView.getWidth() / 2 - mHeight / 20)) {
-                    mCircleWaveView.scrollTo(0, (mHeight / 2 - mCircleWaveView.getWidth() / 2 - mHeight / 20));
+                int border = (distance - mCircleWaveView.getRadius() + mCircleView.getRadius()) +
+                        DensityUtils.dp2px(mContext, 10);//  可上下滑动的最大距离
+                //  当前上下滑动的距离
+                int slideHeight = deltaY + mCircleWaveView.getScrollY();
+                if (slideHeight > border) {
+                    mCircleWaveView.scrollTo(0, border);
                     return true;
-                } else if (deltaY + mCircleWaveView.getScrollY() + (mHeight / 2 - mCircleWaveView.getWidth() / 2 - mHeight / 20) < 0) {
-                    mCircleWaveView.scrollTo(0, -(mHeight / 2 - mCircleWaveView.getWidth() / 2 - mHeight / 20));
+                } else if (slideHeight + border < 0) {
+                    mCircleWaveView.scrollTo(0, -border);
                     return true;
                 }
                 mCircleWaveView.scrollBy(0, deltaY);
@@ -157,7 +165,6 @@ public class OvalLockView extends FrameLayout {
                 mCircleWaveView.setUnLockPrePared(false);
                 mCircleWaveView.setLockPrepared(false);
                 scrollY = mCircleWaveView.getScrollY();
-                distance = DensityUtils.dp2px(mContext, 100);
                 if (Math.abs(scrollY) > (distance - mCircleWaveView.getRadius() + mCircleView.getRadius()) && mOption != null) {
                     switch (mOption) {
                         case LOCK:
@@ -199,7 +206,8 @@ public class OvalLockView extends FrameLayout {
         View view = View.inflate(context, R.layout.layout_oval_lock, this);
         mCircleWaveView = view.findViewById(R.id.oval_view);
         mCircleView = view.findViewById(R.id.green_cv);
-        mProgressBar=view.findViewById(R.id.progress);
+        distance = ((LayoutParams) mCircleView.getLayoutParams()).topMargin;
+        mProgressBar = view.findViewById(R.id.progress);
         mScroller = mCircleWaveView.getScroller();
         mContext = context;
         mCircleWaveView.setOnClickListener(new OnClickListener() {
@@ -210,13 +218,17 @@ public class OvalLockView extends FrameLayout {
     }
 
     public void startWave() {
-        mHandler.postDelayed(mRunnable, 500);
+        mHandler.postDelayed(mRunnable, 300);
     }
 
     public void stopWave() {
         mHandler.removeCallbacks(mRunnable);
         mCircleWaveView.stopWave();
         isOpreating = false;
+    }
+
+    public boolean isOpreating() {
+        return isOpreating;
     }
 
     /**
@@ -240,37 +252,46 @@ public class OvalLockView extends FrameLayout {
         mCircleWaveView.setText(text);
     }
 
+    /**
+     * @param canSlide 是否可以滑动
+     */
     public void setCanSlide(boolean canSlide) {
         this.canSlide = canSlide;
     }
 
+    /**
+     * 设置滑动阻尼
+     *
+     * @param damping 阻尼系数
+     */
+    public void setDamping(double damping) {
+        this.damping = damping;
+    }
 
     public void setBluetoothConnect(boolean isConnect) {
         mCircleWaveView.setBluetoothConnect(isConnect);
-        setCanSlide(isConnect);
-       /* if(isConnect){
-            mProgressBar.setVisibility(GONE);
-        }else {
-            mProgressBar.setVisibility(VISIBLE);
-        }*/
+        //setCanSlide(isConnect);
     }
 
-    public void connecting(boolean isConnecting){
-        this.isConnecting=isConnecting;
+    public void connecting(boolean isConnecting) {
+        this.isConnecting = isConnecting;
         mCircleWaveView.setConnecting(isConnecting);
-        if(isConnecting){
+        if (isConnecting) {
             mProgressBar.setVisibility(VISIBLE);
-        }else {
+            setCanSlide(false);
+        } else {
             mProgressBar.setVisibility(GONE);
+            setCanSlide(true);
         }
     }
 
-
-
-    public void setCircleColor(int viewColor) {
-        mCircleWaveView.setCircleColor(viewColor);
+    public boolean isConnecting(){
+        return isConnecting;
     }
 
+    public void setCircleColor(int color) {
+        mCircleWaveView.setCircleColor(color);
+    }
 
     public void setOnLockOperateListener(OnLockOperateListener onLockOperateListener) {
         mOnLockOperateListener = onLockOperateListener;

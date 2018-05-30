@@ -12,7 +12,6 @@ import android.graphics.Rect;
 import android.support.annotation.ColorRes;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.Scroller;
 
@@ -53,6 +52,7 @@ public class CircleWaveView extends View {
     private boolean isUnLockPrePared;
     private boolean isBluetoothConnect;
     private boolean isConnecting;
+    private int radius;
 
     public CircleWaveView(Context context) {
         this(context, null);
@@ -111,6 +111,7 @@ public class CircleWaveView extends View {
         super.onLayout(changed, left, top, right, bottom);
         mPieCenterX = mWidth / 2;
         mPieCenterY = mHeight / 2;
+
     }
 
     @Override
@@ -126,7 +127,6 @@ public class CircleWaveView extends View {
      */
     private void drawTriangle(Canvas canvas) {
         int radius = Math.min(mHeight, mWidth) / 2 - Math.min(mHeight, mWidth) / 8;
-        Log.e("TAG", "mWidth=" + mWidth + "mHeight=" + mHeight);
         mPaintTrangel.setStyle(Paint.Style.FILL);
         mPaintTrangel.setShadowLayer(4, 0, 3, Color.GRAY);
         //  三角形顶点到圆边的距离
@@ -152,6 +152,7 @@ public class CircleWaveView extends View {
         int verticalCenter = getHeight() / 2;
         int horizontalCenter = getWidth() / 2;
         mRadius = Math.min(verticalCenter, horizontalCenter) - Math.min(verticalCenter, horizontalCenter) / 5;
+        radius = Math.min(verticalCenter, horizontalCenter) - Math.min(verticalCenter, horizontalCenter) / 5;
         if (transforming) {
             mPaint.setColor(getResources().getColor(R.color.red));
             canvas.drawCircle(mPieCenterX, mPieCenterY, mRadius, mPaint);
@@ -280,7 +281,7 @@ public class CircleWaveView extends View {
     }
 
     public int getRadius() {
-        return mRadius;
+        return radius;
     }
 
     /**
