@@ -15,9 +15,10 @@ import com.zhpan.ovallockview.listener.OnLockOperateListener;
 import com.zhpan.ovallockview.utils.DensityUtils;
 
 import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
 
-public class OvalLockView extends FrameLayout {
+public class LockView extends FrameLayout {
     private CircleWaveView mCircleWaveView;
     private CircleView mCircleView;
     private Scroller mScroller;
@@ -30,7 +31,7 @@ public class OvalLockView extends FrameLayout {
     private ProgressBar mProgressBar;
     private boolean isConnecting;
     //  阻尼系数
-    private double damping = 2.2;
+    private double damping = 1.8;
     //  小圆圆心到大圆圆心距离
     private int distance;
     private OnLockOperateListener mOnLockOperateListener;
@@ -42,22 +43,33 @@ public class OvalLockView extends FrameLayout {
         }
     };
 
-    private enum Option {
-        LOCK,
-        UNLOCK
-    }
-
-    public OvalLockView(Context context) {
+    public LockView(Context context) {
         this(context, null);
     }
 
-    public OvalLockView(Context context, AttributeSet attrs) {
+    public LockView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public OvalLockView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public LockView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
+    }
+
+    private void init(Context context, AttributeSet attrs) {
+        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        View view = View.inflate(context, R.layout.layout_oval_lock, this);
+        mCircleWaveView = view.findViewById(R.id.oval_view);
+        mCircleView = view.findViewById(R.id.green_cv);
+        distance = ((LayoutParams) mCircleView.getLayoutParams()).topMargin;
+        mProgressBar = view.findViewById(R.id.progress);
+        mScroller = mCircleWaveView.getScroller();
+        mContext = context;
+        mCircleWaveView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
     }
 
     @Override
@@ -82,12 +94,12 @@ public class OvalLockView extends FrameLayout {
                     mScroller.abortAnimation();
                 }
                 break;
-            case MotionEvent.ACTION_MOVE:
+            case ACTION_MOVE:
                 if (Math.abs(y - mLastY) > mTouchSlop) {
                     intercepted = true;
                 }
                 break;
-            case MotionEvent.ACTION_UP:
+            case ACTION_UP:
                 intercepted = false;
                 break;
         }
@@ -102,16 +114,13 @@ public class OvalLockView extends FrameLayout {
         int scrollY = mCircleWaveView.getScrollY();
         switch (event.getAction()) {
             case ACTION_DOWN:
-                if (!mScroller.isFinished()) {
+                if (!mScroller.isFinished()) {  //  停止滑动动画
                     mScroller.abortAnimation();
                 }
                 break;
-            case MotionEvent.ACTION_MOVE:
+            case ACTION_MOVE:
                 if (!canSlide) {
                     return super.onTouchEvent(event);
-                }
-                if(!mCircleWaveView.isBluetoothConnect()){
-                    performClick();
                 }
                 int deltaY = (int) ((mLastY - y) / damping);
                 if (mCircleWaveView.getScrollY() > mTouchSlop) {
@@ -123,33 +132,28 @@ public class OvalLockView extends FrameLayout {
                     if (mOption != null) {
                         switch (mOption) {
                             case LOCK:
-                                mOnLockOperateListener.onLockPrepared();
+                                if (mOnLockOperateListener != null)
+                                    mOnLockOperateListener.onLockPrepared();
                                 mCircleWaveView.setLockPrepared(true);
-                                isOpreating = true;
                                 break;
                             case UNLOCK:
-                                mOnLockOperateListener.onUnLockPrepared();
+                                if (mOnLockOperateListener != null)
+                                    mOnLockOperateListener.onUnLockPrepared();
                                 mCircleWaveView.setUnLockPrePared(true);
-                                isOpreating = true;
                                 break;
                         }
                     }
                 } else {
                     mCircleWaveView.setUnLockPrePared(false);
                     mCircleWaveView.setLockPrepared(false);
-                    if (isLock()) {
-                        mCircleWaveView.setText("已上锁");
-                    } else {
-                        mCircleWaveView.setText("未上锁");
-                    }
-                    isOpreating = false;
+                    mOnLockOperateListener.onNotPrepared();
                 }
 
                 /**
                  * 控制滑动边界
                  */
                 int border = (distance - mCircleWaveView.getRadius() + mCircleView.getRadius()) +
-                        DensityUtils.dp2px(mContext, 10);//  可上下滑动的最大距离
+                        DensityUtils.dp2px(mContext, 30);//  可上下滑动的最大距离
                 //  当前上下滑动的距离
                 int slideHeight = deltaY + mCircleWaveView.getScrollY();
                 if (slideHeight > border) {
@@ -161,17 +165,19 @@ public class OvalLockView extends FrameLayout {
                 }
                 mCircleWaveView.scrollBy(0, deltaY);
                 break;
-            case MotionEvent.ACTION_UP:
+            case ACTION_UP:
                 mCircleWaveView.setUnLockPrePared(false);
                 mCircleWaveView.setLockPrepared(false);
                 scrollY = mCircleWaveView.getScrollY();
                 if (Math.abs(scrollY) > (distance - mCircleWaveView.getRadius() + mCircleView.getRadius()) && mOption != null) {
                     switch (mOption) {
                         case LOCK:
-                            mOnLockOperateListener.onLockStart();
+                            if (mOnLockOperateListener != null)
+                                mOnLockOperateListener.onLockStart();
                             break;
                         case UNLOCK:
-                            mOnLockOperateListener.onUnlockStart();
+                            if (mOnLockOperateListener != null)
+                                mOnLockOperateListener.onUnlockStart();
                             break;
                     }
                 }
@@ -199,22 +205,6 @@ public class OvalLockView extends FrameLayout {
                     break;
             }
         return super.dispatchTouchEvent(ev);
-    }
-
-    private void init(Context context, AttributeSet attrs) {
-        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-        View view = View.inflate(context, R.layout.layout_oval_lock, this);
-        mCircleWaveView = view.findViewById(R.id.oval_view);
-        mCircleView = view.findViewById(R.id.green_cv);
-        distance = ((LayoutParams) mCircleView.getLayoutParams()).topMargin;
-        mProgressBar = view.findViewById(R.id.progress);
-        mScroller = mCircleWaveView.getScroller();
-        mContext = context;
-        mCircleWaveView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
     }
 
     public void startWave() {
@@ -270,7 +260,7 @@ public class OvalLockView extends FrameLayout {
 
     public void setBluetoothConnect(boolean isConnect) {
         mCircleWaveView.setBluetoothConnect(isConnect);
-        //setCanSlide(isConnect);
+        setCanSlide(isConnect);
     }
 
     public void connecting(boolean isConnecting) {
@@ -285,7 +275,7 @@ public class OvalLockView extends FrameLayout {
         }
     }
 
-    public boolean isConnecting(){
+    public boolean isConnecting() {
         return isConnecting;
     }
 
@@ -295,5 +285,10 @@ public class OvalLockView extends FrameLayout {
 
     public void setOnLockOperateListener(OnLockOperateListener onLockOperateListener) {
         mOnLockOperateListener = onLockOperateListener;
+    }
+
+    private enum Option {
+        LOCK,
+        UNLOCK
     }
 }

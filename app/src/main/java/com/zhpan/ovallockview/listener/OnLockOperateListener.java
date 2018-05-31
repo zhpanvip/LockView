@@ -8,4 +8,6 @@ public interface  OnLockOperateListener {
    void onLockStart();
 
    void onUnlockStart();
+
+   void onNotPrepared();
 }
