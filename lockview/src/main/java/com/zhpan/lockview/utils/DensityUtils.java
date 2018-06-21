@@ -1,4 +1,4 @@
-package com.zhpan.ovallockview.utils;
+package com.zhpan.lockview.utils;
 
 import android.content.Context;
 import android.util.DisplayMetrics;

@@ -1,4 +1,4 @@
-package com.zhpan.ovallockview.listener;
+package com.zhpan.lockview.listener;
 
 public interface  OnLockOperateListener {
    void onLockPrepared();

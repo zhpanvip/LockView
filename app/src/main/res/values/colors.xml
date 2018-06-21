@@ -3,16 +3,4 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-
-    <color name="red">#F33A3A</color>
-    <color name="green">#00A34B</color>
-    <color name="white">#FFFFFF</color>
-    <color name="redDark">#E53039</color>
-
-    <color name="redLight">#F88085</color>
-    <color name="greenLight">#62C48F</color>
-    <color name="transparent">#33ffffff</color>
-    <color name="green_d">#00843D</color>
-    <color name="red_d">#CE000C</color>
-
 </resources>

@@ -1,13 +1,13 @@
-package com.zhpan.ovallockview.view;
+package com.zhpan.lockview.view;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.support.annotation.ColorRes;
 import android.text.TextUtils;
@@ -15,12 +15,12 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Scroller;
 
-import com.zhpan.ovallockview.utils.DensityUtils;
-import com.zhpan.ovallockview.R;
+import com.zhpan.lockview.R;
+import com.zhpan.lockview.utils.DensityUtils;
 
 
 /**
- * Created by zhpan on 2017/5/31.
+ * Created by zhpan on 2018/5/26.
  * Description: 自定义圆
  */
 
@@ -38,8 +38,6 @@ public class CircleWaveView extends View {
     private float mPieCenterY;
     private Paint mPaint;
     private Paint mPaintText;
-    private Paint mPaintTrangel;
-    private Path mPath;
     private Rect bounds;
 
     private boolean isLock = true;
@@ -53,6 +51,10 @@ public class CircleWaveView extends View {
     private boolean isBluetoothConnect;
     private boolean isConnecting;
     private int radius;
+    private Bitmap arrowUp;
+    private Bitmap arrowDown;
+    private int dp13;
+    private boolean isNoNetData;
 
     public CircleWaveView(Context context) {
         this(context, null);
@@ -82,16 +84,18 @@ public class CircleWaveView extends View {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setAntiAlias(true);
         mPaint.setColor(circleColor);
-        mPaintTrangel = new Paint();
         mPaintText = new Paint();
         mPaintText.setColor(mTextColor);
         mPaintText.setStyle(Paint.Style.FILL);
         mPaintText.setTextAlign(Paint.Align.CENTER);
         mPaintText.setAntiAlias(true);
-
+        dp13 = DensityUtils.dp2px(mContext, 13);
         mScroller = new Scroller(context);
-        mPath = new Path();
         bounds = new Rect();
+        arrowUp = BitmapFactory.decodeResource(getResources(),
+                R.drawable.arrow_up);
+        arrowDown = BitmapFactory.decodeResource(getResources(),
+                R.drawable.arrow_down);
     }
 
     @Override
@@ -111,7 +115,6 @@ public class CircleWaveView extends View {
         super.onLayout(changed, left, top, right, bottom);
         mPieCenterX = mWidth / 2;
         mPieCenterY = mHeight / 2;
-
     }
 
     @Override
@@ -122,11 +125,12 @@ public class CircleWaveView extends View {
         drawTriangle(canvas);
     }
 
-    /**
-     * 画三角形
-     */
+
     private void drawTriangle(Canvas canvas) {
-        int radius = Math.min(mHeight, mWidth) / 2 - Math.min(mHeight, mWidth) / 8;
+        int left = (mWidth - arrowUp.getWidth()) / 2;
+        canvas.drawBitmap(arrowUp, left, mHeight / 2 - radius + dp13, mPaint);
+        canvas.drawBitmap(arrowDown, left, mHeight / 2 + radius - dp13 - arrowDown.getHeight(), mPaint);
+        /*int radius = Math.min(mHeight, mWidth) / 2 - Math.min(mHeight, mWidth) / 8;
         mPaintTrangel.setStyle(Paint.Style.FILL);
         mPaintTrangel.setShadowLayer(4, 0, 3, Color.GRAY);
         //  三角形顶点到圆边的距离
@@ -135,7 +139,7 @@ public class CircleWaveView extends View {
         int h1 = DensityUtils.dp2px(mContext, 12);
         //  三角形底边长
         int w = DensityUtils.dp2px(mContext, 14);
-        mPaintTrangel.setColor(getResources().getColor(R.color.transparent));
+        mPaintTrangel.setColor(getResources().getColor(R.color.transparent_33));
         mPath.moveTo(mWidth / 2, mHeight / 2 - (radius - h0));
         mPath.lineTo(mWidth / 2 - w, mHeight / 2 - (radius - h1 - h0));
         mPath.lineTo(mWidth / 2 + w, mHeight / 2 - (radius - h1 - h0));
@@ -144,7 +148,7 @@ public class CircleWaveView extends View {
         mPath.moveTo(mWidth / 2, mHeight / 2 + (radius - h0));
         mPath.lineTo(mWidth / 2 - w, mHeight / 2 + (radius - h1 - h0));
         mPath.lineTo(mWidth / 2 + w, mHeight / 2 + (radius - h1 - h0));
-        canvas.drawPath(mPath, mPaintTrangel);
+        canvas.drawPath(mPath, mPaintTrangel);*/
     }
 
     private void drawCircle(Canvas canvas) {
@@ -154,36 +158,27 @@ public class CircleWaveView extends View {
         mRadius = Math.min(verticalCenter, horizontalCenter) - Math.min(verticalCenter, horizontalCenter) / 5;
         radius = Math.min(verticalCenter, horizontalCenter) - Math.min(verticalCenter, horizontalCenter) / 5;
         if (transforming) {
-            mPaint.setColor(getResources().getColor(R.color.red));
-            canvas.drawCircle(mPieCenterX, mPieCenterY, mRadius, mPaint);
-            if (!isLock) {
-                mRadius = mRadius - transformDelta;
-            } else {
-                mRadius = transformDelta;
-            }
             mPaint.setColor(getResources().getColor(R.color.green));
+            canvas.drawCircle(mPieCenterX, mPieCenterY, mRadius, mPaint);
+            mRadius = isLock ? transformDelta : mRadius - transformDelta;
+            mPaint.setColor(getResources().getColor(R.color.red));
             canvas.drawCircle(mPieCenterX, mPieCenterY, mRadius, mPaint);
         } else {
             mRadius = mRadius - waveDelta;
             if (!isBluetoothConnect) {
-                if (isLock)
-                    mPaint.setColor(getColor(R.color.redLight));
-                else
-                    mPaint.setColor(getColor(R.color.greenLight));
+                if (isNoNetData) {
+                    mPaint.setColor(getColor(R.color.gray));
+                } else
+                    mPaint.setColor(isLock ? getColor(R.color.redLight) : getColor(R.color.greenLight));
             } else {
                 if (isLockPrepared) {
-                    mPaint.setColor(getColor(R.color.red_d));
+                    mPaint.setColor(getColor(R.color.redDark));
                 } else if (isUnLockPrePared) {
-                    mPaint.setColor(getColor(R.color.green_d));
+                    mPaint.setColor(getColor(R.color.greenDark));
                 } else {
-                    if (!isLock) {
-                        mPaint.setColor(getColor(R.color.green));
-                    } else {
-                        mPaint.setColor(getColor(R.color.red));
-                    }
+                    mPaint.setColor(isLock ? getColor(R.color.red) : getColor(R.color.green));
                 }
             }
-
             canvas.drawCircle(mPieCenterX, mPieCenterY, mRadius, mPaint);
         }
     }
@@ -192,24 +187,32 @@ public class CircleWaveView extends View {
      * 画圆中的文字
      */
     private void drawText(Canvas canvas) {
-        if (TextUtils.isEmpty(mText)||isConnecting) return;
-        if(isBluetoothConnect){
-            mPaintText.setTextSize(mTextSize);
-            mPaintText.getTextBounds(mText, 0, mText.length(), bounds);
-            Paint.FontMetricsInt fontMetricsInt = mPaintText.getFontMetricsInt();
-            int baseline = (getMeasuredHeight() - fontMetricsInt.bottom + fontMetricsInt.top) / 2 - fontMetricsInt.top;
-            canvas.drawText(mText, mPieCenterX, baseline, mPaintText);
-        }else {
-//            mText="蓝牙未连接";
-            mPaintText.getTextBounds("蓝牙未连接", 0, mText.length(), bounds);
-            mPaintText.setTextSize(mTextSize);
-            Paint.FontMetricsInt fontMetricsInt = mPaintText.getFontMetricsInt();
-            int baseline = (getMeasuredHeight() - fontMetricsInt.bottom + fontMetricsInt.top) / 2 - fontMetricsInt.top;
-            canvas.drawText("蓝牙未连接", mPieCenterX, baseline-30, mPaintText);
-            mPaintText.setTextSize(DensityUtils.dp2px(mContext,12));
-            canvas.drawText(mText,mPieCenterX,baseline+30,mPaintText);
+        if (isConnecting) return;
+        if (TextUtils.isEmpty(mText)) {
+            String text = mContext.getResources().getString(R.string.ble_not_connect);
+            drawCenterText(canvas, text);
+            return;
         }
+        if (isBluetoothConnect) {
+            drawCenterText(canvas, mText);
+        } else {
+            String text = mContext.getResources().getString(R.string.ble_not_connect);
+            mPaintText.getTextBounds(text, 0, text.length(), bounds);
+            mPaintText.setTextSize(mTextSize);
+            Paint.FontMetricsInt fontMetricsInt = mPaintText.getFontMetricsInt();
+            int baseline = (getMeasuredHeight() - fontMetricsInt.bottom + fontMetricsInt.top) / 2 - fontMetricsInt.top;
+            canvas.drawText(text, mPieCenterX, baseline - 30, mPaintText);
+            mPaintText.setTextSize(DensityUtils.dp2px(mContext, 12));
+            canvas.drawText(mText, mPieCenterX, baseline + 30, mPaintText);
+        }
+    }
 
+    private void drawCenterText(Canvas canvas, String text) {
+        mPaintText.setTextSize(mTextSize);
+        mPaintText.getTextBounds(text, 0, text.length(), bounds);
+        Paint.FontMetricsInt fontMetricsInt = mPaintText.getFontMetricsInt();
+        int baseline = (getMeasuredHeight() - fontMetricsInt.bottom + fontMetricsInt.top) / 2 - fontMetricsInt.top;
+        canvas.drawText(text, mPieCenterX, baseline, mPaintText);
     }
 
     public void startWave() {
@@ -284,11 +287,7 @@ public class CircleWaveView extends View {
         return radius;
     }
 
-    /**
-     * 是否能够开门
-     *
-     * @param lock
-     */
+
     public void setLock(final boolean lock) {
         stopWave();
         isLock = lock;
@@ -306,6 +305,15 @@ public class CircleWaveView extends View {
 
     public void setText(String text) {
         this.mText = text;
+        invalidate();
+    }
+
+    public boolean isNoNetData() {
+        return isNoNetData;
+    }
+
+    public void setNoNetData(boolean noNetData) {
+        isNoNetData = noNetData;
         invalidate();
     }
 

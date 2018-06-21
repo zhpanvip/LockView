@@ -1,4 +1,4 @@
-package com.zhpan.ovallockview.view;
+package com.zhpan.lockview.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,8 +9,8 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.zhpan.ovallockview.utils.DensityUtils;
-import com.zhpan.ovallockview.R;
+import com.zhpan.lockview.R;
+import com.zhpan.lockview.utils.DensityUtils;
 
 
 /**
@@ -72,7 +72,7 @@ public class CircleView extends View {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        mRadius = Math.min(mHeight, mWidth) / 2 - Math.min(mHeight, mWidth) / 8;
+        mRadius = Math.min(mHeight, mWidth) / 2 ;
         mPieCenterX = mWidth / 2;
         mPieCenterY = mHeight / 2;
     }
