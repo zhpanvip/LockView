@@ -29,7 +29,6 @@ public class CircleWaveView extends View {
     private int mTextColor;
     private int mWidth;
     private int mHeight;
-    private int mRadius;
     private String mText;
     private float mTextSize;
     private Scroller mScroller;
@@ -125,7 +124,7 @@ public class CircleWaveView extends View {
         drawTriangle(canvas);
     }
 
-
+    //  绘制圆中两个三角
     private void drawTriangle(Canvas canvas) {
         int left = (mWidth - arrowUp.getWidth()) / 2;
         canvas.drawBitmap(arrowUp, left, mHeight / 2 - radius + dp13, mPaint);
@@ -150,12 +149,12 @@ public class CircleWaveView extends View {
         mPath.lineTo(mWidth / 2 + w, mHeight / 2 + (radius - h1 - h0));
         canvas.drawPath(mPath, mPaintTrangel);*/
     }
-
+    //  绘制圆
     private void drawCircle(Canvas canvas) {
         mPaint.setColor(circleColor);
         int verticalCenter = getHeight() / 2;
         int horizontalCenter = getWidth() / 2;
-        mRadius = Math.min(verticalCenter, horizontalCenter) - Math.min(verticalCenter, horizontalCenter) / 5;
+        int mRadius = Math.min(verticalCenter, horizontalCenter) - Math.min(verticalCenter, horizontalCenter) / 5;
         radius = Math.min(verticalCenter, horizontalCenter) - Math.min(verticalCenter, horizontalCenter) / 5;
         if (transforming) {
             mPaint.setColor(getResources().getColor(R.color.green));
@@ -206,7 +205,7 @@ public class CircleWaveView extends View {
             canvas.drawText(mText, mPieCenterX, baseline + 30, mPaintText);
         }
     }
-
+    //  绘制中心文字
     private void drawCenterText(Canvas canvas, String text) {
         mPaintText.setTextSize(mTextSize);
         mPaintText.getTextBounds(text, 0, text.length(), bounds);
@@ -275,7 +274,8 @@ public class CircleWaveView extends View {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int verticalCenter = getHeight() / 2;
                     int horizontalCenter = getWidth() / 2;
-                    transformDelta = (int) ((Math.min(verticalCenter, horizontalCenter) - Math.min(verticalCenter, horizontalCenter) / 6) * (float) animation.getAnimatedValue());
+                    transformDelta = (int) ((Math.min(verticalCenter, horizontalCenter) - Math.min(verticalCenter, horizontalCenter) / 6)
+                            * (float) animation.getAnimatedValue());
                     invalidate();
                 }
             });
