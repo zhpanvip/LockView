@@ -33,7 +33,7 @@ public class LockView extends FrameLayout {
     private boolean canSlide = true;
     private ProgressBar mProgressBar;
     //  阻尼系数
-    private double damping = 1.7;
+    private double damping = 2.0;
     //  小圆圆心到大圆圆心距离
     private int distance;
     private OnLockOperateListener mOnLockOperateListener;

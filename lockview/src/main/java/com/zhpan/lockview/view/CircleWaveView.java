@@ -166,9 +166,9 @@ public class CircleWaveView extends View {
         } else {
             mRadius = mRadius - waveDelta;
             if (!isBluetoothConnect) {
-                if (isNoNetData) {
+                if (isNoNetData)
                     mPaint.setColor(getColor(R.color.gray));
-                } else
+                else
                     mPaint.setColor(isLock ? getColor(R.color.redLight) : getColor(R.color.greenLight));
             } else {
                 if (isLockPrepared) {

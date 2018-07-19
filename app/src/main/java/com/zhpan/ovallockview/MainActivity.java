@@ -4,9 +4,11 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.zhpan.lockview.listener.OnLockOperateListener;
 import com.zhpan.lockview.view.LockView;
+
 
 public class MainActivity extends AppCompatActivity implements OnLockOperateListener, View.OnClickListener {
     private LockView mLockView;
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements OnLockOperateList
             changeLockState(false);
         }
     };
+    private boolean isOperating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements OnLockOperateList
     }
 
     private void changeLockState(boolean isLock) {
+        isOperating = false;
         mLockView.stopWave();
         mLockView.setLockState(isLock);
         if (isLock)
@@ -61,6 +65,11 @@ public class MainActivity extends AppCompatActivity implements OnLockOperateList
 
     @Override
     public void onLockStart() {
+        if (isOperating) {
+            Toast.makeText(this, "正在操作，请稍后再试", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        isOperating = true;
         mLockView.setText("正在上锁");
         mLockView.startWave();
         mHandler.postDelayed(mLockRunnable, 3000);
@@ -68,6 +77,11 @@ public class MainActivity extends AppCompatActivity implements OnLockOperateList
 
     @Override
     public void onUnlockStart() {
+        if (isOperating) {
+            Toast.makeText(this, "正在操作，请稍后再试", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        isOperating = true;
         mLockView.startWave();
         mLockView.setText("正在开锁");
         mHandler.postDelayed(mUnlockRunnable, 3000);
