@@ -7,8 +7,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Scroller;
+import android.widget.TextView;
 
 import com.zhpan.lockview.R;
 import com.zhpan.lockview.listener.OnLockOperateListener;
@@ -23,7 +25,10 @@ import static android.view.MotionEvent.ACTION_UP;
  */
 public class LockView extends FrameLayout {
     private CircleWaveView mCircleWaveView;
-    private CircleView mCircleView;
+    private ImageView mIvUnlock;
+    private ImageView mIvLock;
+    private TextView mTvLock;
+    private TextView mTvUnlock;
     private Scroller mScroller;
     private int mLastY;
     private int mTouchSlop;
@@ -62,9 +67,12 @@ public class LockView extends FrameLayout {
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         View view = View.inflate(context, R.layout.layout_oval_lock, this);
         mCircleWaveView = (CircleWaveView) view.findViewById(R.id.circle_wave_view);
-        mCircleView = (CircleView) view.findViewById(R.id.green_cv);
-        distance = ((LayoutParams) mCircleView.getLayoutParams()).topMargin;
+        mIvUnlock = (ImageView) view.findViewById(R.id.green_cv);
+        mIvLock=(ImageView)view.findViewById(R.id.red_cv);
+        distance = ((LayoutParams) mIvUnlock.getLayoutParams()).topMargin;
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress);
+        mTvLock=(TextView) view.findViewById(R.id.tv_lock);
+        mTvUnlock=(TextView)view.findViewById(R.id.tv_unlock);
         mScroller = mCircleWaveView.getScroller();
         mContext = context;
         mCircleWaveView.setOnClickListener(new OnClickListener() {
@@ -129,7 +137,7 @@ public class LockView extends FrameLayout {
                 } else if (mCircleWaveView.getScrollY() < -mTouchSlop) {
                     mOption = Option.UNLOCK;
                 }
-                if (Math.abs(scrollY) > (distance - mCircleWaveView.getRadius() + mCircleView.getRadius())) {
+                if (Math.abs(scrollY) > (distance - mCircleWaveView.getRadius() + mIvUnlock.getHeight()/2)) {
                     if (mOption != null) {
                         switch (mOption) {
                             case LOCK:
@@ -159,7 +167,7 @@ public class LockView extends FrameLayout {
                 /**
                  * 控制滑动边界
                  */
-                int border = (distance - mCircleWaveView.getRadius() + mCircleView.getRadius()) +
+                int border = (distance - mCircleWaveView.getRadius() + mIvUnlock.getHeight()/2) +
                         DensityUtils.dp2px(mContext, 25);//  可上下滑动的最大距离
                 int deltaY = (int) ((mLastY - y) / damping);
                 //  当前上下滑动的距离
@@ -177,7 +185,7 @@ public class LockView extends FrameLayout {
                 mCircleWaveView.setUnLockPrePared(false);
                 mCircleWaveView.setLockPrepared(false);
                 scrollY = mCircleWaveView.getScrollY();
-                if (Math.abs(scrollY) > (distance - mCircleWaveView.getRadius() + mCircleView.getRadius()) && mOption != null) {
+                if (Math.abs(scrollY) > (distance - mCircleWaveView.getRadius() + mIvUnlock.getHeight()/2) && mOption != null) {
                     switch (mOption) {
                         case LOCK:
                             if (mOnLockOperateListener != null)
@@ -249,6 +257,46 @@ public class LockView extends FrameLayout {
 
     public void setText(String text) {
         mCircleWaveView.setText(text);
+    }
+
+
+    public void setTextSize(int textSize){
+        mTvUnlock.setTextSize(textSize);
+        mTvLock.setTextSize(textSize);
+        invalidate();
+    }
+
+    public void setText(String unlockText,String lockText){
+        mTvUnlock.setText(unlockText);
+        mTvLock.setText(lockText);
+        invalidate();
+    }
+
+    public void setTextColor(int unlockColor,int lockColor){
+        mTvUnlock.setTextColor(unlockColor);
+        mTvLock.setTextColor(lockColor);
+    }
+
+    public void showArrow(boolean showArrow){
+        if(showArrow){
+            mIvLock.setVisibility(VISIBLE);
+            mIvUnlock.setVisibility(VISIBLE);
+        }else {
+            mIvLock.setVisibility(INVISIBLE);
+            mIvUnlock.setVisibility(INVISIBLE);
+        }
+        invalidate();
+    }
+
+    public void showText(boolean showText){
+        if(showText){
+            mTvLock.setVisibility(VISIBLE);
+            mTvUnlock.setVisibility(VISIBLE);
+        }else {
+            mTvLock.setVisibility(INVISIBLE);
+            mTvUnlock.setVisibility(INVISIBLE);
+        }
+        invalidate();
     }
 
     /**

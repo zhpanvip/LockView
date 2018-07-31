@@ -50,8 +50,8 @@ public class CircleWaveView extends View {
     private boolean isBluetoothConnect;
     private boolean isConnecting;
     private int radius;
-    private Bitmap arrowUp;
-    private Bitmap arrowDown;
+//    private Bitmap arrowUp;
+//    private Bitmap arrowDown;
     private int dp13;
     private boolean isNoNetData;
 
@@ -91,10 +91,10 @@ public class CircleWaveView extends View {
         dp13 = DensityUtils.dp2px(mContext, 13);
         mScroller = new Scroller(context);
         bounds = new Rect();
-        arrowUp = BitmapFactory.decodeResource(getResources(),
-                R.drawable.arrow_up);
-        arrowDown = BitmapFactory.decodeResource(getResources(),
-                R.drawable.arrow_down);
+//        arrowUp = BitmapFactory.decodeResource(getResources(),
+//                R.drawable.arrow_up);
+//        arrowDown = BitmapFactory.decodeResource(getResources(),
+//                R.drawable.arrow_down);
     }
 
     @Override
@@ -121,14 +121,14 @@ public class CircleWaveView extends View {
         super.onDraw(canvas);
         drawCircle(canvas);
         drawText(canvas);
-        drawTriangle(canvas);
+//        drawTriangle(canvas);
     }
 
     //  绘制圆中两个三角
     private void drawTriangle(Canvas canvas) {
-        int left = (mWidth - arrowUp.getWidth()) / 2;
-        canvas.drawBitmap(arrowUp, left, mHeight / 2 - radius + dp13, mPaint);
-        canvas.drawBitmap(arrowDown, left, mHeight / 2 + radius - dp13 - arrowDown.getHeight(), mPaint);
+//        int left = (mWidth - arrowUp.getWidth()) / 2;
+//        canvas.drawBitmap(arrowUp, left, mHeight / 2 - radius + dp13, mPaint);
+//        canvas.drawBitmap(arrowDown, left, mHeight / 2 + radius - dp13 - arrowDown.getHeight(), mPaint);
         /*int radius = Math.min(mHeight, mWidth) / 2 - Math.min(mHeight, mWidth) / 8;
         mPaintTrangel.setStyle(Paint.Style.FILL);
         mPaintTrangel.setShadowLayer(4, 0, 3, Color.GRAY);

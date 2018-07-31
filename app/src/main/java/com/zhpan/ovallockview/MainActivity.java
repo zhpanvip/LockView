@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements OnLockOperateList
         mLockView.setOnClickListener(this);
         //  设置滑动阻尼大小
         mLockView.setDamping(2);
+        mLockView.setText("下滑开锁","上滑上锁");
+        mLockView.setTextSize(13);
         //  设置上锁状态
         if (mLockView.isLock()) {
             mLockView.setText("已上锁");
