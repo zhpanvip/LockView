@@ -124,7 +124,6 @@ public class LockView extends FrameLayout {
                 if (!canSlide) {
                     return super.onTouchEvent(event);
                 }
-                int deltaY = (int) ((mLastY - y) / damping);
                 if (mCircleWaveView.getScrollY() > mTouchSlop) {
                     mOption = Option.LOCK;
                 } else if (mCircleWaveView.getScrollY() < -mTouchSlop) {
@@ -162,6 +161,7 @@ public class LockView extends FrameLayout {
                  */
                 int border = (distance - mCircleWaveView.getRadius() + mCircleView.getRadius()) +
                         DensityUtils.dp2px(mContext, 25);//  可上下滑动的最大距离
+                int deltaY = (int) ((mLastY - y) / damping);
                 //  当前上下滑动的距离
                 int slideHeight = deltaY + mCircleWaveView.getScrollY();
                 if (slideHeight > border) {

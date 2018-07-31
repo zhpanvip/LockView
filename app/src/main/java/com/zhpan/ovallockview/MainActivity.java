@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity implements OnLockOperateList
     private Runnable mLockRunnable = new Runnable() {
         @Override
         public void run() {
+            //  设置为上锁状态
             changeLockState(true);
         }
     };
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements OnLockOperateList
     private Runnable mUnlockRunnable = new Runnable() {
         @Override
         public void run() {
+            //  设置为未上锁状态
             changeLockState(false);
         }
     };
@@ -33,9 +35,15 @@ public class MainActivity extends AppCompatActivity implements OnLockOperateList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mLockView = findViewById(R.id.lock_view);
+        //  初始化时设置蓝牙未连接，此时可以点击，但不能滑动
         mLockView.setBluetoothConnect(false);
+        //  添加滑动事件监听
         mLockView.setOnLockOperateListener(this);
+        //  设置点击事件监听
         mLockView.setOnClickListener(this);
+        //  设置滑动阻尼大小
+        mLockView.setDamping(2);
+        //  设置上锁状态
         if (mLockView.isLock()) {
             mLockView.setText("已上锁");
         } else {
@@ -103,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements OnLockOperateList
             @Override
             public void run() {
                 mLockView.connecting(false);
+                //  设置蓝牙已连接
                 mLockView.setBluetoothConnect(true);
             }
         }, 2000);
