@@ -18,17 +18,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="120dp"
-        android:text="下滑开锁"
+        android:layout_marginTop="@dimen/dp_130"
         android:textColor="@color/green"
-        android:textSize="13sp" />
+        android:textSize="@dimen/sp_13" />
 
     <ImageView
         android:id="@+id/green_cv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="@dimen/dp_110"
         android:src="@drawable/slide_unlock" />
 
     <!-- <com.zhpan.lockview.view.CircleView
@@ -44,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="-100dp"
+        android:layout_marginTop="@dimen/dp_m_110"
         android:src="@drawable/slide_lock" />
 
     <TextView
@@ -52,24 +51,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="-120dp"
-        android:text="上滑上锁"
+        android:layout_marginTop="@dimen/dp_m_130"
         android:textColor="@color/red"
-        android:textSize="13sp" />
+        android:textSize="@dimen/sp_13" />
 
     <com.zhpan.lockview.view.CircleWaveView
         android:id="@+id/circle_wave_view"
-        android:layout_width="220dp"
-        android:layout_height="300dp"
+        android:layout_width="@dimen/dp_240"
+        android:layout_height="@dimen/dp_300"
         android:layout_gravity="center"
-        android:padding="20dp" />
+        android:padding="@dimen/dp_20" />
 
+    <LinearLayout
+        android:id="@+id/ll_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_gravity="center">
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/white" />
+        <TextView
+            android:id="@+id/tv_connecting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/was_connecting"
+            android:textSize="@dimen/sp_16"
+            android:layout_marginTop="@dimen/dp_5"
+            android:textColor="@color/white"/>
+    </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:indeterminateTint="@color/white"
-        android:visibility="gone" />
 </FrameLayout>

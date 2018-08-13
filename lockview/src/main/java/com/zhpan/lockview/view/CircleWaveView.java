@@ -50,10 +50,12 @@ public class CircleWaveView extends View {
     private boolean isBluetoothConnect;
     private boolean isConnecting;
     private int radius;
-//    private Bitmap arrowUp;
+    //    private Bitmap arrowUp;
 //    private Bitmap arrowDown;
     private int dp13;
     private boolean isNoNetData;
+
+    private String mConnectStatus;
 
     public CircleWaveView(Context context) {
         this(context, null);
@@ -149,6 +151,7 @@ public class CircleWaveView extends View {
         mPath.lineTo(mWidth / 2 + w, mHeight / 2 + (radius - h1 - h0));
         canvas.drawPath(mPath, mPaintTrangel);*/
     }
+
     //  绘制圆
     private void drawCircle(Canvas canvas) {
         mPaint.setColor(circleColor);
@@ -194,17 +197,21 @@ public class CircleWaveView extends View {
         }
         if (isBluetoothConnect) {
             drawCenterText(canvas, mText);
-        } else {
-            String text = mContext.getResources().getString(R.string.ble_not_connect);
-            mPaintText.getTextBounds(text, 0, text.length(), bounds);
+        } else if(isNoNetData) {
+            drawCenterText(canvas, mText);
+        }else {
+            if (TextUtils.isEmpty(mConnectStatus))
+                mConnectStatus = mContext.getResources().getString(R.string.ble_not_connect);
+            mPaintText.getTextBounds(mConnectStatus, 0, mConnectStatus.length(), bounds);
             mPaintText.setTextSize(mTextSize);
             Paint.FontMetricsInt fontMetricsInt = mPaintText.getFontMetricsInt();
             int baseline = (getMeasuredHeight() - fontMetricsInt.bottom + fontMetricsInt.top) / 2 - fontMetricsInt.top;
-            canvas.drawText(text, mPieCenterX, baseline - 30, mPaintText);
+            canvas.drawText(mText, mPieCenterX, baseline - 30, mPaintText);
             mPaintText.setTextSize(DensityUtils.dp2px(mContext, 12));
-            canvas.drawText(mText, mPieCenterX, baseline + 30, mPaintText);
+            canvas.drawText(mConnectStatus, mPieCenterX, baseline + 30, mPaintText);
         }
     }
+
     //  绘制中心文字
     private void drawCenterText(Canvas canvas, String text) {
         mPaintText.setTextSize(mTextSize);
@@ -283,10 +290,26 @@ public class CircleWaveView extends View {
         }
     }
 
+    public String getConnectStatus() {
+        return mConnectStatus;
+    }
+
+    public void setConnectStatus(String connectStatus) {
+        mConnectStatus = connectStatus;
+    }
+
     public int getRadius() {
         return radius;
     }
 
+    public float getTextSize() {
+        return mTextSize;
+    }
+
+    public void setTextSize(float textSize) {
+        mTextSize = DensityUtils.dp2px(mContext, textSize);
+        invalidate();
+    }
 
     public void setLock(final boolean lock) {
         stopWave();
@@ -314,6 +337,12 @@ public class CircleWaveView extends View {
 
     public void setNoNetData(boolean noNetData) {
         isNoNetData = noNetData;
+        invalidate();
+    }
+
+    public void setNoNetData(boolean noNetData,String text) {
+        isNoNetData = noNetData;
+        mText=text;
         invalidate();
     }
 

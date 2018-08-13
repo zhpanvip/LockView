@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">LockView</string>
-    <string name="ble_not_connect">蓝牙未连接</string>
+    <string name="ble_not_connect">设备未连接</string>
+    <string name="was_connecting">连接中</string>
 </resources>

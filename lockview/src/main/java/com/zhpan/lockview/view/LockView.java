@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Scroller;
 import android.widget.TextView;
@@ -36,7 +37,7 @@ public class LockView extends FrameLayout {
     private Option mOption;
 //    private boolean isOperating;
     private boolean canSlide = true;
-    private ProgressBar mProgressBar;
+    private LinearLayout mProgressBar;
     //  阻尼系数
     private double damping = 2.0;
     //  小圆圆心到大圆圆心距离
@@ -49,7 +50,7 @@ public class LockView extends FrameLayout {
             mCircleWaveView.startWave();
         }
     };
-
+    private TextView mTvConnection;
     public LockView(Context context) {
         this(context, null);
     }
@@ -70,7 +71,8 @@ public class LockView extends FrameLayout {
         mIvUnlock = (ImageView) view.findViewById(R.id.green_cv);
         mIvLock=(ImageView)view.findViewById(R.id.red_cv);
         distance = ((LayoutParams) mIvUnlock.getLayoutParams()).topMargin;
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progress);
+        mProgressBar = (LinearLayout) view.findViewById(R.id.ll_progress);
+        mTvConnection=(TextView)view.findViewById(R.id.tv_connecting);
         mTvLock=(TextView) view.findViewById(R.id.tv_lock);
         mTvUnlock=(TextView)view.findViewById(R.id.tv_unlock);
         mScroller = mCircleWaveView.getScroller();
@@ -330,6 +332,10 @@ public class LockView extends FrameLayout {
         mCircleWaveView.setNoNetData(isNoData);
     }
 
+    public void setNoNetData(boolean isNoData,String text){
+        mCircleWaveView.setNoNetData(isNoData,text);
+    }
+
     public void connecting(boolean isConnecting) {
         mCircleWaveView.setConnecting(isConnecting);
         if (isConnecting) {
@@ -348,8 +354,20 @@ public class LockView extends FrameLayout {
         mCircleWaveView.setCircleColor(color);
     }
 
+    public void setCenterTextSize(float textSize) {
+        mCircleWaveView.setTextSize(textSize);
+    }
+
     public void setOnLockOperateListener(OnLockOperateListener onLockOperateListener) {
         mOnLockOperateListener = onLockOperateListener;
+    }
+
+    public void setConnectingText(String text){
+        mTvConnection.setText(text);
+    }
+
+    public void setConnectingTextSize(int textSize){
+        mTvConnection.setText(textSize);
     }
 
     private enum Option {

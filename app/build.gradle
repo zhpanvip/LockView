@@ -24,6 +24,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support.test:runner:1.0.2'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:3.0.2'
-//    compile project(':lockview')
-    compile 'com.zhpan.lockview:lockview:1.1.0'
+    compile project(':lockview')
+//    compile 'com.zhpan.lockview:lockview:1.1.0'
 }

@@ -44,13 +44,16 @@ public class MainActivity extends AppCompatActivity implements OnLockOperateList
         //  设置滑动阻尼大小
         mLockView.setDamping(2);
         mLockView.setText("下滑开锁","上滑上锁");
-        mLockView.setTextSize(13);
+        mLockView.setTextSize(14);
+        mLockView.setCenterTextSize(18);
+        mLockView.setConnectingText("正在连接");
         //  设置上锁状态
         if (mLockView.isLock()) {
             mLockView.setText("已上锁");
         } else {
             mLockView.setText("未上锁");
         }
+        mLockView.setNoNetData(true,"未连接");
     }
 
     private void changeLockState(boolean isLock) {
