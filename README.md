@@ -5,7 +5,12 @@
 
 
 使用方法：
-1.布局文件添加
+1.添加依赖
+  ```
+    compile 'com.zhpan.lockview:lockview:1.1.3'
+  ```
+
+2.布局文件添加
   ```
   <com.zhpan.lockview.view.LockView
           android:id="@+id/lock_view"
@@ -13,7 +18,7 @@
           android:layout_height="wrap_content"
           android:layout_centerInParent="true" />
   ```
-  2.设置操作的监听事件
+  3.设置操作的监听事件
    ```
   mLockView.setOnLockOperateListener(new OnLockOperateListener() {
             @Override
@@ -42,7 +47,7 @@
             }
         });
   ```
-  3.开放接口
+  4.开放接口
    ```
    // 设置蓝牙是否连接
    mLockView.setBluetoothConnect(false);
