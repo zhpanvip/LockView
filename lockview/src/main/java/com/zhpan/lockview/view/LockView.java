@@ -9,7 +9,6 @@ import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Scroller;
 import android.widget.TextView;
 
@@ -35,7 +34,7 @@ public class LockView extends FrameLayout {
     private int mTouchSlop;
     private Context mContext;
     private Option mOption;
-//    private boolean isOperating;
+    //    private boolean isOperating;
     private boolean canSlide = true;
     private LinearLayout mProgressBar;
     //  阻尼系数
@@ -51,6 +50,7 @@ public class LockView extends FrameLayout {
         }
     };
     private TextView mTvConnection;
+    private boolean isFrozen;
     public LockView(Context context) {
         this(context, null);
     }
@@ -69,12 +69,12 @@ public class LockView extends FrameLayout {
         View view = View.inflate(context, R.layout.layout_oval_lock, this);
         mCircleWaveView = (CircleWaveView) view.findViewById(R.id.circle_wave_view);
         mIvUnlock = (ImageView) view.findViewById(R.id.green_cv);
-        mIvLock=(ImageView)view.findViewById(R.id.red_cv);
+        mIvLock = (ImageView) view.findViewById(R.id.red_cv);
         distance = ((LayoutParams) mIvUnlock.getLayoutParams()).topMargin;
         mProgressBar = (LinearLayout) view.findViewById(R.id.ll_progress);
-        mTvConnection=(TextView)view.findViewById(R.id.tv_connecting);
-        mTvLock=(TextView) view.findViewById(R.id.tv_lock);
-        mTvUnlock=(TextView)view.findViewById(R.id.tv_unlock);
+        mTvConnection = (TextView) view.findViewById(R.id.tv_connecting);
+        mTvLock = (TextView) view.findViewById(R.id.tv_lock);
+        mTvUnlock = (TextView) view.findViewById(R.id.tv_unlock);
         mScroller = mCircleWaveView.getScroller();
         mContext = context;
         mCircleWaveView.setOnClickListener(new OnClickListener() {
@@ -131,7 +131,7 @@ public class LockView extends FrameLayout {
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (!canSlide) {
+                if (!canSlide || isFrozen) {
                     return super.onTouchEvent(event);
                 }
                 if (mCircleWaveView.getScrollY() > mTouchSlop) {
@@ -139,7 +139,7 @@ public class LockView extends FrameLayout {
                 } else if (mCircleWaveView.getScrollY() < -mTouchSlop) {
                     mOption = Option.UNLOCK;
                 }
-                if (Math.abs(scrollY) > (distance - mCircleWaveView.getRadius() + mIvUnlock.getHeight()/2)) {
+                if (Math.abs(scrollY) > (distance - mCircleWaveView.getRadius() + mIvUnlock.getHeight() / 2)) {
                     if (mOption != null) {
                         switch (mOption) {
                             case LOCK:
@@ -169,7 +169,7 @@ public class LockView extends FrameLayout {
                 /**
                  * 控制滑动边界
                  */
-                int border = (distance - mCircleWaveView.getRadius() + mIvUnlock.getHeight()/2) +
+                int border = (distance - mCircleWaveView.getRadius() + mIvUnlock.getHeight() / 2) +
                         DensityUtils.dp2px(mContext, 25);//  可上下滑动的最大距离
                 int deltaY = (int) ((mLastY - y) / damping);
                 //  当前上下滑动的距离
@@ -187,7 +187,7 @@ public class LockView extends FrameLayout {
                 mCircleWaveView.setUnLockPrePared(false);
                 mCircleWaveView.setLockPrepared(false);
                 scrollY = mCircleWaveView.getScrollY();
-                if (Math.abs(scrollY) > (distance - mCircleWaveView.getRadius() + mIvUnlock.getHeight()/2) && mOption != null) {
+                if (Math.abs(scrollY) > (distance - mCircleWaveView.getRadius() + mIvUnlock.getHeight() / 2) && mOption != null) {
                     switch (mOption) {
                         case LOCK:
                             if (mOnLockOperateListener != null)
@@ -253,6 +253,7 @@ public class LockView extends FrameLayout {
     }
 
     public void setLockState(boolean lock) {
+        isFrozen=false;
         mCircleWaveView.changeLockState(lock);
         setLock(lock);
     }
@@ -262,39 +263,39 @@ public class LockView extends FrameLayout {
     }
 
 
-    public void setTextSize(int textSize){
+    public void setTextSize(int textSize) {
         mTvUnlock.setTextSize(textSize);
         mTvLock.setTextSize(textSize);
         invalidate();
     }
 
-    public void setText(String unlockText,String lockText){
+    public void setText(String unlockText, String lockText) {
         mTvUnlock.setText(unlockText);
         mTvLock.setText(lockText);
         invalidate();
     }
 
-    public void setTextColor(int unlockColor,int lockColor){
+    public void setTextColor(int unlockColor, int lockColor) {
         mTvUnlock.setTextColor(unlockColor);
         mTvLock.setTextColor(lockColor);
     }
 
-    public void showArrow(boolean showArrow){
-        if(showArrow){
+    public void showArrow(boolean showArrow) {
+        if (showArrow) {
             mIvLock.setVisibility(VISIBLE);
             mIvUnlock.setVisibility(VISIBLE);
-        }else {
+        } else {
             mIvLock.setVisibility(INVISIBLE);
             mIvUnlock.setVisibility(INVISIBLE);
         }
         invalidate();
     }
 
-    public void showText(boolean showText){
-        if(showText){
+    public void showText(boolean showText) {
+        if (showText) {
             mTvLock.setVisibility(VISIBLE);
             mTvUnlock.setVisibility(VISIBLE);
-        }else {
+        } else {
             mTvLock.setVisibility(INVISIBLE);
             mTvUnlock.setVisibility(INVISIBLE);
         }
@@ -317,7 +318,7 @@ public class LockView extends FrameLayout {
         this.damping = damping;
     }
 
-    public void setBluetoothConnect(boolean isConnect,String text) {
+    public void setBluetoothConnect(boolean isConnect, String text) {
         mCircleWaveView.setBluetoothConnect(isConnect);
         mCircleWaveView.setText(text);
         setCanSlide(isConnect);
@@ -328,12 +329,12 @@ public class LockView extends FrameLayout {
         setCanSlide(isConnect);
     }
 
-    public void setNoNetData(boolean isNoData){
+    public void setNoNetData(boolean isNoData) {
         mCircleWaveView.setNoNetData(isNoData);
     }
 
-    public void setNoNetData(boolean isNoData,String text){
-        mCircleWaveView.setNoNetData(isNoData,text);
+    public void setNoNetData(boolean isNoData, String text) {
+        mCircleWaveView.setNoNetData(isNoData, text);
     }
 
     public void connecting(boolean isConnecting) {
@@ -346,7 +347,7 @@ public class LockView extends FrameLayout {
         }
     }
 
-    public boolean isConnecting(){
+    public boolean isConnecting() {
         return mCircleWaveView.isConnecting();
     }
 
@@ -362,11 +363,22 @@ public class LockView extends FrameLayout {
         mOnLockOperateListener = onLockOperateListener;
     }
 
-    public void setConnectingText(String text){
+    public void setConnectingText(String text) {
         mTvConnection.setText(text);
     }
 
-    public void setConnectingTextSize(int textSize){
+    public void setDeviceFrozen(String frozen) {
+        connecting(false);
+        setBluetoothConnect(true);
+        setLockState(true);
+//        this.frozen = frozen;
+        isFrozen = true;
+        setText(frozen);
+
+//        invalidate();
+    }
+
+    public void setConnectingTextSize(int textSize) {
         mTvConnection.setText(textSize);
     }
 

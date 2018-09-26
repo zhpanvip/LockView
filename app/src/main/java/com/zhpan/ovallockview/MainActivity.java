@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements OnLockOperateList
         public void run() {
             //  设置为未上锁状态
             changeLockState(false);
+
         }
     };
     private boolean isOperating;
@@ -47,12 +48,13 @@ public class MainActivity extends AppCompatActivity implements OnLockOperateList
         mLockView.setTextSize(14);
         mLockView.setCenterTextSize(18);
         mLockView.setConnectingText("正在连接");
+//        mLockView.setDeviceFrozen("已冻结");
         //  设置上锁状态
-        if (mLockView.isLock()) {
+     /*   if (mLockView.isLock()) {
             mLockView.setText("已上锁");
         } else {
             mLockView.setText("未上锁");
-        }
+        }*/
         mLockView.setNoNetData(true,"未连接");
     }
 
@@ -117,7 +119,8 @@ public class MainActivity extends AppCompatActivity implements OnLockOperateList
             public void run() {
                 mLockView.connecting(false);
                 //  设置蓝牙已连接
-                mLockView.setBluetoothConnect(true);
+//                mLockView.setBluetoothConnect(true);
+                mLockView.setDeviceFrozen("已冻结");
             }
         }, 2000);
     }

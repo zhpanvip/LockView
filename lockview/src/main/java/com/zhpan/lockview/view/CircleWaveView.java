@@ -29,7 +29,7 @@ public class CircleWaveView extends View {
     private int mTextColor;
     private int mWidth;
     private int mHeight;
-    private String mText;
+    private String mText="未知状态";
     private float mTextSize;
     private Scroller mScroller;
     //  圆心坐标
