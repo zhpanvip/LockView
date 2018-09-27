@@ -7,7 +7,7 @@
 使用方法：
 1.添加依赖
   ```
-    compile 'com.zhpan.lockview:lockview:1.1.3'
+    compile 'com.zhpan.lockview:lockview:1.1.8'
   ```
 
 2.布局文件添加
