@@ -3,7 +3,6 @@
 
 ![这里写图片描述](https://github.com/zhpanvip/OvalLockView/blob/master/image/new.gif)
 
-
 使用方法：
 1.添加依赖
   ```
@@ -12,7 +11,7 @@
 
 2.布局文件添加
   ```
-  <com.zhpan.lockview.view.LockView
+  <com.zhpan.lockview.LockView
           android:id="@+id/lock_view"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"

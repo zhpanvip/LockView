@@ -10,7 +10,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.zhpan.lockview.R;
-import com.zhpan.lockview.utils.DensityUtils;
+import com.zhpan.lockview.utils.LockViewUtils;
 
 
 /**
@@ -48,7 +48,7 @@ public class CircleView extends View {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircleView);
             circleColor = typedArray.getColor(R.styleable.CircleView_circle_color, context.getResources().getColor(R.color.red));
             mTextColor = typedArray.getColor(R.styleable.CircleView_text_color, context.getResources().getColor(R.color.white));
-            mTextSize = typedArray.getDimension(R.styleable.CircleView_text_size, DensityUtils.dp2px(context,16));
+            mTextSize = typedArray.getDimension(R.styleable.CircleView_text_size, LockViewUtils.dp2px(16));
             mText = typedArray.getString(R.styleable.CircleView_text_str);
             typedArray.recycle();
         }

@@ -7,13 +7,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.zhpan.lockview.listener.OnLockOperateListener;
-import com.zhpan.lockview.view.LockView;
+import com.zhpan.lockview.LockView;
 
 
 public class MainActivity extends AppCompatActivity implements OnLockOperateListener, View.OnClickListener {
     private LockView mLockView;
-    private static Handler mHandler = new Handler();
-    private Runnable mLockRunnable = new Runnable() {
+    private static final Handler mHandler = new Handler();
+    private final Runnable mLockRunnable = new Runnable() {
         @Override
         public void run() {
             //  设置为上锁状态
@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements OnLockOperateList
         }
     };
 
-    private Runnable mUnlockRunnable = new Runnable() {
+    private final Runnable mUnlockRunnable = new Runnable() {
         @Override
         public void run() {
             //  设置为未上锁状态
@@ -119,8 +119,8 @@ public class MainActivity extends AppCompatActivity implements OnLockOperateList
             public void run() {
                 mLockView.connecting(false);
                 //  设置蓝牙已连接
-//                mLockView.setBluetoothConnect(true);
-                mLockView.setDeviceFrozen("已冻结");
+                mLockView.setBluetoothConnect(true);
+//                mLockView.setDeviceFrozen("已冻结");
             }
         }, 2000);
     }

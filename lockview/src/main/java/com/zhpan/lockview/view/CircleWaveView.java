@@ -4,8 +4,6 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -16,7 +14,7 @@ import android.view.View;
 import android.widget.Scroller;
 
 import com.zhpan.lockview.R;
-import com.zhpan.lockview.utils.DensityUtils;
+import com.zhpan.lockview.utils.LockViewUtils;
 
 
 /**
@@ -29,7 +27,7 @@ public class CircleWaveView extends View {
     private int mTextColor;
     private int mWidth;
     private int mHeight;
-    private String mText="未知状态";
+    private String mText = "未知状态";
     private float mTextSize;
     private Scroller mScroller;
     //  圆心坐标
@@ -72,7 +70,7 @@ public class CircleWaveView extends View {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircleWaveView);
             circleColor = typedArray.getColor(R.styleable.CircleWaveView_wave_color, context.getResources().getColor(R.color.red));
             mTextColor = typedArray.getColor(R.styleable.CircleWaveView_wave_text_color, context.getResources().getColor(R.color.white));
-            mTextSize = typedArray.getDimension(R.styleable.CircleWaveView_wave_text_size, DensityUtils.dp2px(context, 16));
+            mTextSize = typedArray.getDimension(R.styleable.CircleWaveView_wave_text_size, LockViewUtils.dp2px(16));
             mText = typedArray.getString(R.styleable.CircleWaveView_wave_text_str);
             typedArray.recycle();
         }
@@ -90,7 +88,7 @@ public class CircleWaveView extends View {
         mPaintText.setStyle(Paint.Style.FILL);
         mPaintText.setTextAlign(Paint.Align.CENTER);
         mPaintText.setAntiAlias(true);
-        dp13 = DensityUtils.dp2px(mContext, 13);
+        dp13 = LockViewUtils.dp2px(13);
         mScroller = new Scroller(context);
         bounds = new Rect();
 //        arrowUp = BitmapFactory.decodeResource(getResources(),
@@ -197,9 +195,9 @@ public class CircleWaveView extends View {
         }
         if (isBluetoothConnect) {
             drawCenterText(canvas, mText);
-        } else if(isNoNetData) {
+        } else if (isNoNetData) {
             drawCenterText(canvas, mText);
-        }else {
+        } else {
             if (TextUtils.isEmpty(mConnectStatus))
                 mConnectStatus = mContext.getResources().getString(R.string.ble_not_connect);
             mPaintText.getTextBounds(mConnectStatus, 0, mConnectStatus.length(), bounds);
@@ -207,7 +205,7 @@ public class CircleWaveView extends View {
             Paint.FontMetricsInt fontMetricsInt = mPaintText.getFontMetricsInt();
             int baseline = (getMeasuredHeight() - fontMetricsInt.bottom + fontMetricsInt.top) / 2 - fontMetricsInt.top;
             canvas.drawText(mText, mPieCenterX, baseline - 30, mPaintText);
-            mPaintText.setTextSize(DensityUtils.dp2px(mContext, 12));
+            mPaintText.setTextSize(LockViewUtils.dp2px(12));
             canvas.drawText(mConnectStatus, mPieCenterX, baseline + 30, mPaintText);
         }
     }
@@ -307,7 +305,7 @@ public class CircleWaveView extends View {
     }
 
     public void setTextSize(float textSize) {
-        mTextSize = DensityUtils.dp2px(mContext, textSize);
+        mTextSize = LockViewUtils.dp2px(textSize);
         invalidate();
     }
 
@@ -340,9 +338,9 @@ public class CircleWaveView extends View {
         invalidate();
     }
 
-    public void setNoNetData(boolean noNetData,String text) {
+    public void setNoNetData(boolean noNetData, String text) {
         isNoNetData = noNetData;
-        mText=text;
+        mText = text;
         invalidate();
     }
 
